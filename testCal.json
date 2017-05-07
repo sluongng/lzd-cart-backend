@@ -1,0 +1,6 @@
+{ "statusCode": 200,
+  "headers":
+   { "Access-Control-Allow-Origin": "*",
+     "Access-Control-Allow-Credentials": true },
+  "body": "{\"cartId\":\"Cart12334\",\"items\":[{\"itemId\":\"item1\",\"itemDetails\":{\"name\":\"ePhone 9\",\"pictures\":[{\"pictureId\":100001,\"resourceUrl\":\"\"}],\"value\":700,\"weight\":0.14,\"sources\":[{\"location\":100003},{\"location\":100002},{\"location\":100001}]},\"bestSource\":\"\",\"quantity\":1,\"shippingCost\":0,\"totalPrice\":0},{\"itemId\":\"item2\",\"itemDetails\":{\"name\":\"TV SamSong 40 inches\",\"pictures\":[{\"pictureId\":100001,\"resourceUrl\":\"\"}],\"value\":1000,\"weight\":8,\"sources\":[{\"location\":100001},{\"location\":100002}]},\"bestSource\":\"\",\"quantity\":1,\"shippingCost\":0,\"totalPrice\":0},{\"itemId\":\"item3\",\"itemDetails\":{\"name\":\"grounded coffee arabica\",\"pictures\":[{\"pictureId\":100001,\"resourceUrl\":\"\"}],\"value\":35,\"weight\":0.1,\"sources\":[{\"location\":100003}]},\"bestSource\":\"\",\"quantity\":1,\"shippingCost\":0,\"totalPrice\":0}],\"destination\":100003,\"cartPrice\":0}"
+}

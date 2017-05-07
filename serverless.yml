@@ -13,5 +13,18 @@ provider:
   region: ap-northeast-2
 
 functions:
-  hello:
-    handler: handler.hello
+  getCart:
+    handler: getCart.main
+    events:
+      - http:
+          path: /lzd/cart/{id}
+          method: get
+          cors: true
+
+  calculateCart:
+    handler: calculateCart.main
+    events:
+      - http:
+          path: /lzd/cart/calculate
+          method: post
+          cors: true
