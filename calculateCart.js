@@ -37,12 +37,6 @@ export async function main(event, context, callback) {
 
   let res = _.cloneDeep(data);
 
-  //TODO: implement price calculation
-
-  // _.mapValues(res.items, function(item) {
-  //   const lowest = shippingCost(destination, item);
-  // });
-
   res.items.map((item) => {
     const temp = shippingCost(destination, item, callback);
     if (temp == -1) callback(null, notFound("Item not found in price table"));
@@ -71,6 +65,7 @@ function shippingCost(destination, item, callback) {
   // console.log("itemId being lookup: " + itemId);
 
   //find index of item in priceTable
+  //TODO: replace _.findIndex with _.find
   var index = _.findIndex( CONST_PRICE_TABLE , function(o) {
 
     // DEBUG
@@ -78,7 +73,6 @@ function shippingCost(destination, item, callback) {
 
     return o.itemId === itemId;
   });
-
   if (index == -1) {
     callback(null, notFound("Item not found in price table"));
     return;
@@ -106,7 +100,7 @@ function shippingCost(destination, item, callback) {
       // DEBUG
       console.log("The dest node " + dest.destination + " price is: " + dest.price);
 
-      return dest.destination == destination;
+      return dest.destination === destination;
     });
 
     if (typeof temp === "undefined") {
