@@ -2,7 +2,7 @@
  * Created by NB on 5/6/2017.
  */
 
-import { success, failure, notFound } from "./libs/response-lib";
+import { success, notFound } from "./libs/response-lib";
 import _ from "lodash";
 import { priceTable }  from "./priceTable2.json";
 
@@ -33,15 +33,35 @@ export async function main(event, context, callback) {
 
   const destination = data.destination;
 
-  let items = data.items;
-
   let res = _.cloneDeep(data);
+
+  if (res.items.size < 1) {
+    callback(notFound("Cart is empty"));
+    return;
+  }
 
   res.items.map((item) => {
     const temp = shippingCost(destination, item, callback);
-    if (temp == -1) callback(null, notFound("Item not found in price table"));
-    item.shippingCost = temp;
+    if (temp === -1) callback(null, notFound("Item not found in price table"));
+
+    item.shippingCost = temp.price + temp.overweightFee;
+    item.bestSource = temp.sourceId;
   });
+
+  let totalShippingCost = 0;
+  let totalValue = 0;
+
+  res.items.forEach(function(item) {
+    totalValue = totalValue + (item.itemDetails.value * item.quantity);
+  });
+
+  if (totalValue <= 100) totalShippingCost = totalShippingCost + CONST_FLAT_RATE;
+
+  res.items.forEach(function(item) {
+    totalShippingCost = totalShippingCost + item.shippingCost;
+  });
+
+  res.cartPrice = totalValue + totalShippingCost;
 
   callback(null, success(res));
 }
@@ -49,7 +69,7 @@ export async function main(event, context, callback) {
 //Input:
 //  destination
 //  item
-//Ouput:
+//Output:
 //  lowest 'cost' of respective 'item' shipping to respective 'destination'
 //Error:
 //  [400] item not found
@@ -66,14 +86,14 @@ function shippingCost(destination, item, callback) {
 
   //find index of item in priceTable
   //TODO: replace _.findIndex with _.find
-  var index = _.findIndex( CONST_PRICE_TABLE , function(o) {
+  let index = _.findIndex( CONST_PRICE_TABLE , function(o) {
 
     // DEBUG
     // console.log("itemId inside priceTable: " + o.itemId);
 
     return o.itemId === itemId;
   });
-  if (index == -1) {
+  if (index === -1) {
     callback(null, notFound("Item not found in price table"));
     return;
   }
@@ -87,15 +107,15 @@ function shippingCost(destination, item, callback) {
   // DEBUG
   // console.log("The first sourceId of item " + itemId + " is: " + sources[0].sourceId);
 
-  //create an array of price
-  const allPrice = sources.map(function(source) {
+  //create an array of {sourceId, price}
+  const sourceAndPrice = sources.map(function(source) {
     const destinations = source.destinations;
 
     // var i = _.findIndex(destinations, function(o) { return o.destination; })
     //
     // if (i === -1) return -2;
 
-    var temp = _.find(destinations, function(dest) {
+    let temp = _.find(destinations, function(dest) {
 
       // DEBUG
       console.log("The dest node " + dest.destination + " price is: " + dest.price);
@@ -108,21 +128,41 @@ function shippingCost(destination, item, callback) {
       return;
     }
 
-    return temp.price;
+    return {
+      sourceId: source.sourceId,
+      price: temp.price
+    };
   });
-  //Note that this solution does not care about Source with lowest price
-  // but only the lowest price itself
-  //Realistically you would need to care about which warehouse you are shipping from to notify the shipping process.
 
-  var minCost = _.min(allPrice);
+  let prices = _.map(sourceAndPrice, 'price');
+
+  let minCost = _.min(prices);
+
+  let bestSourceAndPrice = _.find(sourceAndPrice, function(o) { return o.price === minCost; });
 
   // sources.forEach( (source) => {
   //   const location = source.location;
   // } );
 
+
+
+  let overweightFee = 0;
+
+  const totalWeight = item.itemDetails.weight * item.quantity;
+
+  if (totalWeight > 1) overweightFee = (CONST_FLAT_RATE * 10 / 100) * (totalWeight - 1);
+
+  const res = {
+    sourceId: bestSourceAndPrice.sourceId,
+    price: bestSourceAndPrice.price,
+    overweightFee: overweightFee
+  };
+
   // DEBUG
-  console.log("minCost is: " + minCost);
+  console.log("bestSource is: " + res.sourceId);
+  console.log("minCost is: " + res.price);
+  console.log("overweightFee is: " + res.overweightFee);
   console.log("-----END------");
 
-  return minCost;
+  return res;
 }
