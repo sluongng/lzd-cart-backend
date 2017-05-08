@@ -7,10 +7,6 @@
           "sourceId": 100001,
           "destinations": [
             {
-              "destination": 100001,
-              "price": 0.00
-            },
-            {
               "destination": 100002,
               "price": 3.00
             },
@@ -28,10 +24,6 @@
               "price": 3.00
             },
             {
-              "destination": 100002,
-              "price": 0.00
-            },
-            {
               "destination": 100003,
               "price": 5.00
             }
@@ -47,10 +39,6 @@
             {
               "destination": 100002,
               "price": 5.00
-            },
-            {
-              "destination": 100003,
-              "price": 0.00
             }
           ]
         }
@@ -62,10 +50,6 @@
         {
           "sourceId": 100001,
           "destinations": [
-            {
-              "destination": 100001,
-              "price": 0.00
-            },
             {
               "destination": 100002,
               "price": 2.00

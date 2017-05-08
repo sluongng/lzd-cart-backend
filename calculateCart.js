@@ -81,15 +81,12 @@ function shippingCost(destination, item, callback) {
 
   const itemId = item.itemId;
 
-  // DEBUG
-  // console.log("itemId being lookup: " + itemId);
-
   //find index of item in priceTable
   //TODO: replace _.findIndex with _.find
   let index = _.findIndex( CONST_PRICE_TABLE , function(o) {
 
     // DEBUG
-    // console.log("itemId inside priceTable: " + o.itemId);
+    //console.log("itemId inside priceTable: " + o.itemId);
 
     return o.itemId === itemId;
   });
@@ -109,19 +106,27 @@ function shippingCost(destination, item, callback) {
 
   //create an array of {sourceId, price}
   const sourceAndPrice = sources.map(function(source) {
-    const destinations = source.destinations;
+    // DEBUG
+    console.log("Start mapping source with ID: " + source.sourceId);
+
+
+    const destinationList = source.destinations;
 
     // var i = _.findIndex(destinations, function(o) { return o.destination; })
     //
     // if (i === -1) return -2;
 
-    let temp = _.find(destinations, function(dest) {
+    let temp = _.find(destinationList, function(dest) {
 
       // DEBUG
-      console.log("The dest node " + dest.destination + " price is: " + dest.price);
+      // console.log("The dest node " + dest.destination + " vs " + destination);
+      // console.log("Return value is " + (dest.destination === destination));
 
-      return dest.destination === destination;
+      return dest.destination == destination;
     });
+
+
+    console.log("Type of var_temp: " + (typeof temp));
 
     if (typeof temp === "undefined") {
       callback(null, notFound("Destination " + destination + " was not found in Price Table"));
