@@ -22,7 +22,6 @@ export async function main(event, context, callback) {
           weight: 0.14,
           sources: [
             {source: 100003},
-            {source: 100002},
             {source: 100001}
           ]
         },
@@ -66,7 +65,8 @@ export async function main(event, context, callback) {
           value: 35,
           weight: 0.1,
           sources: [
-            {source: 100003}
+            {source: 100001},
+            {source: 100002}
           ]
         },
         bestSource: '',
