@@ -119,8 +119,8 @@ function shippingCost(destination, item, callback) {
     let temp = _.find(destinationList, function(dest) {
 
       // DEBUG
-      // console.log("The dest node " + dest.destination + " vs " + destination);
-      // console.log("Return value is " + (dest.destination === destination));
+      console.log("The dest node " + dest.destination + " vs " + destination);
+      console.log("Return value is " + (dest.destination === destination));
 
       return dest.destination == destination;
     });
